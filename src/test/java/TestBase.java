@@ -16,6 +16,8 @@ public class TestBase {
     }
 
     public void initialize() {
+
+        //TODO: убрать опции веб-драйвера и сделать скачивание файла через input/output stream, чтобы не привязываться к типу браузера
         HashMap<String,Object> chromePrefs = new HashMap<>();
         ChromeOptions options = new ChromeOptions();
         WebDriverManager.chromedriver().setup();
@@ -30,6 +32,7 @@ public class TestBase {
         webDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
     }
 
+    //TODO: добавить возможность использовать браузер многократно, не перезапуская перед каждым тестом
     public void tearDown() {
         webDriver.quit();
     }

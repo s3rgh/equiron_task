@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class LuxoftTest extends TestBase {
 
+    //TODO: добавить README
     LuxoftPage luxoftPage;
 
     @BeforeEach
@@ -27,11 +28,14 @@ public class LuxoftTest extends TestBase {
     @Test
     public void checkRequiredCourseExists() throws InterruptedException {
         luxoftPage = new LuxoftPage(webDriver);
+        //TODO: строку - адрес сайта перенести в константы
         luxoftPage.openUrl("https://www.luxoft-training.ru");
         luxoftPage.isPageInitialized();
         luxoftPage.openMenuPoint();
         luxoftPage.loadCatalog();
         Thread.sleep(5000);
+
+        //TODO: вынести работу с pdf в отдельный класс, вызывать необходимый метод в этом месте
         String text = "";
         File pdfFile = new File(getCurrentWorkingDirectory() + "\\luxoft_training_catalog.pdf");
         try {
