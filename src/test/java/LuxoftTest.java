@@ -1,22 +1,23 @@
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
+import helpers.CatalogDownloadHelper;
+import helpers.PDFHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pages.LuxoftPage;
+import pages.LuxoftCatalogPage;
+import pages.LuxoftStartPage;
 
-import java.io.File;
-import java.io.IOException;
-
+import static constants.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class LuxoftTest extends TestBase {
 
-    LuxoftPage luxoftPage;
+    LuxoftStartPage luxoftStartPage;
+    LuxoftCatalogPage luxoftCatalogPage;
 
     @BeforeEach
     public void start() {
         initialize();
+        luxoftStartPage = new LuxoftStartPage(webDriver);
     }
 
     @AfterEach
@@ -26,22 +27,13 @@ public class LuxoftTest extends TestBase {
 
     @Test
     public void checkRequiredCourseExists() throws InterruptedException {
-        luxoftPage = new LuxoftPage(webDriver);
-        luxoftPage.openUrl("https://www.luxoft-training.ru");
-        luxoftPage.isPageInitialized();
-        luxoftPage.openMenuPoint();
-        luxoftPage.loadCatalog();
-        Thread.sleep(5000);
-        String text = "";
-        File pdfFile = new File(getCurrentWorkingDirectory() + "\\luxoft_training_catalog.pdf");
-        try {
-            PDDocument pdDocument = PDDocument.load(pdfFile);
-            PDFTextStripper pdfTextStripper = new PDFTextStripper();
-            text = pdfTextStripper.getText(pdDocument);
-            pdfFile.delete();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        assertThat(text.contains("Шаблоны проектирования приложений масштаба предприятия")).isEqualTo(true);
+
+        luxoftCatalogPage = luxoftStartPage
+                .openUrl(BASE_URL)
+                .openMenuPoint(MENU_CATALOG);
+
+        CatalogDownloadHelper.downloadFile(luxoftCatalogPage.loadCatalog(DOWNLOAD_CATALOG));
+        Thread.sleep(1000);
+        assertThat(PDFHelper.checkRequiredTextInPdf(SOURCE_DIRECTORY)).isEqualTo(true);
     }
 }
